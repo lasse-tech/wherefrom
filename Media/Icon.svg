@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#2b3350"/>
+      <stop offset="100%" stop-color="#11141f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffdf8a"/>
+      <stop offset="55%" stop-color="#f0b73f"/>
+      <stop offset="100%" stop-color="#c2842a"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="64" cy="64" r="60" fill="url(#bg)"/>
+  <circle cx="64" cy="64" r="60" fill="none" stroke="url(#gold)" stroke-width="5"/>
+
+  <!-- The trail back to the origin: footsteps from the item in hand to the place
+       it came from, with the arrowhead at the far end. -->
+  <path d="M 86 90 C 58 92 36 76 36 54"
+        fill="none" stroke="url(#gold)" stroke-width="10"
+        stroke-linecap="round" stroke-dasharray="0.1 18"/>
+  <path d="M 36 26 L 51 52 L 21 52 Z" fill="url(#gold)"/>
+
+  <!-- The item you are holding now. -->
+  <circle cx="90" cy="90" r="12" fill="url(#gold)"/>
+  <circle cx="90" cy="90" r="12" fill="none" stroke="#11141f" stroke-width="3"/>
+</svg>

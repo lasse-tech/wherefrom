@@ -1,0 +1,19 @@
+package-as: Wherefrom
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+# no externals: the addon embeds no libraries
+
+ignore:
+  - README.md
+  - CLAUDE.md
+  - Makefile
+  - Makefile.bat
+  - .luacheckrc
+  - scripts
+  - tests
+  - tools
+  - Media/README.md
+  - Media/Icon.svg

@@ -1,0 +1,8 @@
+# Source archives of a release: only the addon
+/.github export-ignore
+/.gitattributes export-ignore
+/.pkgmeta export-ignore
+/README.md export-ignore
+# cmd.exe mis-parses labels in batch files with LF line endings
+*.bat text eol=crlf
+*.png binary
