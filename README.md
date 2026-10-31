@@ -76,6 +76,10 @@ German and English, following the client's language. Other locales fall back to 
 `Locales/enUS.lua` is the full key list to translate from, and `make lint` fails on any
 key a locale is missing.
 
+## Support
+
+[Buy me a coffee](https://buymeacoffee.com/gossardla)
+
 ## Licence
 
 MIT — see [LICENSE](LICENSE). © 2026 lasse tech, Lars Gossard.
