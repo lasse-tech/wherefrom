@@ -5,6 +5,20 @@ All notable changes to Wherefrom are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.1.0] - 2026-11-06
+
+### Added
+- `make install-forever` and `make uninstall-forever` install into and remove from the Forever client
+- World of Warcraft: Forever: `Wherefrom_Camelot.toc` (interface 16001). Recorded sources
+  and the game's own source text work there; Forever has no Adventure Guide, so there is
+  no *Drops from* line and no index scan
+
+### Changed
+- Retail interface 120105 (12.1.5)
+- `Makefile.bat` honours `FLAVOR` like the `Makefile`
+
 ## [1.0.1] - 2026-10-31
 
 ### Added

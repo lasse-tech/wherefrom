@@ -15,5 +15,6 @@ ignore:
   - scripts
   - tests
   - tools
+  - brand
   - Media/README.md
   - Media/Icon.svg

@@ -126,9 +126,11 @@ function Journal:Build(force)
         return
     end
 
-    if C_AddOns and C_AddOns.LoadAddOn then C_AddOns.LoadAddOn("Blizzard_EncounterJournal") end
-    if not (EJ_GetNumTiers and C_EncounterJournal and C_EncounterJournal.GetLootInfoByIndex) then
-        T.Print(L["The Adventure Guide is not available in this client."])
+    -- Forever has the EJ_* functions but not the journal: its client does not load
+    -- Blizzard_EncounterJournal (AllowLoadGameType standard, classic).
+    local loaded = C_AddOns and C_AddOns.LoadAddOn and C_AddOns.LoadAddOn("Blizzard_EncounterJournal")
+    if not (loaded and EJ_GetNumTiers and C_EncounterJournal and C_EncounterJournal.GetLootInfoByIndex) then
+        if force then T.Print(L["The Adventure Guide is not available in this client."]) end
         return
     end
 

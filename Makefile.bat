@@ -7,7 +7,9 @@ set "ADDON=Wherefrom"
 set "TOC=%ADDON%_Mainline.toc"
 set "DIST_DIR=dist"
 set "INSTALL_DIRS=Core UI Locales Media"
-set "INSTALL_FILES=%TOC% CHANGELOG.md LICENSE"
+set "TOCS=%TOC% %ADDON%_Camelot.toc"
+set "INSTALL_FILES=%TOCS% CHANGELOG.md LICENSE"
+if not defined FLAVOR set "FLAVOR=_retail_"
 
 for /f "tokens=2 delims=: " %%v in ('findstr /b "## Version:" "%TOC%"') do set "VERSION=%%v"
 
@@ -16,7 +18,7 @@ if "%TARGET%"=="" set "TARGET=help"
 set "ARG2=%~2"
 
 for %%t in (help version check check-toc check-locales lint test install debug ^
-            uninstall dist deploy release clean distclean purge) do (
+            uninstall install-forever uninstall-forever dist deploy release clean distclean purge) do (
     if /i "%TARGET%"=="%%t" goto :run
 )
 echo Unknown target "%TARGET%".
@@ -45,20 +47,20 @@ rem Finding the client ---------------------------------------------------------
 
 :find_addons
 set "ADDONS="
-if defined WOW_RETAIL_ADDON_FOLDER (
+if "%FLAVOR%"=="_retail_" if defined WOW_RETAIL_ADDON_FOLDER (
     set "ADDONS=%WOW_RETAIL_ADDON_FOLDER%"
     exit /b 0
 )
 if defined WOW_DIR (
-    if exist "%WOW_DIR%\_retail_" set "ADDONS=%WOW_DIR%\_retail_\Interface\AddOns"
+    if exist "%WOW_DIR%\%FLAVOR%" set "ADDONS=%WOW_DIR%\%FLAVOR%\Interface\AddOns"
     exit /b 0
 )
 for %%d in ("%PROGRAMFILES(X86)%\World of Warcraft" ^
             "%PROGRAMFILES%\World of Warcraft" ^
             "C:\Games\World of Warcraft" ^
             "D:\World of Warcraft") do (
-    if exist "%%~d\_retail_" (
-        set "ADDONS=%%~d\_retail_\Interface\AddOns"
+    if exist "%%~d\%FLAVOR%" (
+        set "ADDONS=%%~d\%FLAVOR%\Interface\AddOns"
         exit /b 0
     )
 )
@@ -93,8 +95,18 @@ echo   warning: luacheck is not installed - this only checked syntax.
 echo   install it with: luarocks install luacheck
 exit /b 1
 
-rem check-toc: every file the TOC lists exists
+rem check-toc: TOCs differ only in ## Interface:, every file the TOC lists exists
 :check-toc
+findstr /v /b /c:"## Interface:" "%TOC%" > "%TEMP%\%ADDON%_ref.txt"
+findstr /v /b /c:"## Interface:" "%ADDON%_Camelot.toc" > "%TEMP%\%ADDON%_cmp.txt"
+fc /w "%TEMP%\%ADDON%_ref.txt" "%TEMP%\%ADDON%_cmp.txt" >nul
+set "DRIFT=%ERRORLEVEL%"
+del "%TEMP%\%ADDON%_ref.txt" "%TEMP%\%ADDON%_cmp.txt"
+if not "%DRIFT%"=="0" (
+    echo   DRIFT   %ADDON%_Camelot.toc differs from %TOC% beyond ## Interface:
+    exit /b 1
+)
+echo toc: 2 flavors agree
 set "MISSING=0"
 for /f "usebackq delims=" %%l in ("%TOC%") do (
     set "LINE=%%l"
@@ -244,6 +256,18 @@ rem distclean: same as clean, the addon embeds no libraries
 call :clean
 echo nothing else to clean - this addon embeds no libraries
 exit /b 0
+
+rem install-forever: install into the Forever client (FLAVOR=_forever_)
+:install-forever
+set "FLAVOR=_forever_"
+call :install
+exit /b %ERRORLEVEL%
+
+rem uninstall-forever: remove the addon from the Forever client, SavedVariables stay
+:uninstall-forever
+set "FLAVOR=_forever_"
+call :uninstall
+exit /b %ERRORLEVEL%
 
 rem purge: uninstall and delete the SavedVariables (needs CONFIRM=yes)
 :purge

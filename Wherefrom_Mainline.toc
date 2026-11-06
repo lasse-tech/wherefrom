@@ -1,9 +1,9 @@
-## Interface: 120100
+## Interface: 120105
 ## Title: Wherefrom
 ## Notes: Adds a provenance block to item tooltips: where you got the item, and where it comes from.
 ## Notes-deDE: Ergänzt Gegenstands-Tooltips um einen Herkunftsblock: woher du den Gegenstand hast und woher er stammt.
 ## Author: Lars Gossard
-## Version: 1.0.1
+## Version: 1.1.0
 ## X-Email: lars@lasse-tech.de
 ## X-Website: https://github.com/lasse-tech/wherefrom
 ## X-Donate: https://buymeacoffee.com/gossardla

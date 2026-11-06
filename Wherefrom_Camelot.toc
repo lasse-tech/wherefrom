@@ -1,0 +1,32 @@
+## Interface: 16001
+## Title: Wherefrom
+## Notes: Adds a provenance block to item tooltips: where you got the item, and where it comes from.
+## Notes-deDE: Ergänzt Gegenstands-Tooltips um einen Herkunftsblock: woher du den Gegenstand hast und woher er stammt.
+## Author: Lars Gossard
+## Version: 1.1.0
+## X-Email: lars@lasse-tech.de
+## X-Website: https://github.com/lasse-tech/wherefrom
+## X-Donate: https://buymeacoffee.com/gossardla
+## X-Copyright: 2026 lasse tech, Lars Gossard
+## X-License: MIT
+## SavedVariables: WherefromDB
+## IconTexture: Interface\AddOns\Wherefrom\Media\Icon.png
+
+Locales\Locale.lua
+Locales\enUS.lua
+Locales\deDE.lua
+
+Core\Addon.lua
+Core\Database.lua
+Core\Sources.lua
+Core\Context.lua
+Core\Capture.lua
+Core\Journal.lua
+Core\Origin.lua
+Core\Format.lua
+Core\Tooltip.lua
+
+UI\Options.lua
+UI\Options.xml
+
+Core\Init.lua

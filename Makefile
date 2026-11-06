@@ -9,16 +9,18 @@ WOW_RETAIL_ADDON_FOLDER ?=
 ## WOW_DIR: World of Warcraft folder, overrides auto-detection
 WOW_DIR ?=
 
-## FLAVOR: client folder below WOW_DIR
+## FLAVOR: client folder below WOW_DIR: _retail_ or _forever_
 FLAVOR ?= _retail_
 
 ## WOW_UI_SIM: wow-ui-sim checkout for make test
 WOW_UI_SIM ?= $(HOME)/git/wow-ui-sim
 
 TOC     := $(ADDON)_Mainline.toc
+# Forever loads _Camelot.toc; the TOCs differ only in ## Interface:
+TOCS    := $(TOC) $(ADDON)_Camelot.toc
 VERSION := $(shell sed -n 's/^## Version: //p' $(TOC))
 
-INSTALL_FILES := $(TOC) CHANGELOG.md LICENSE
+INSTALL_FILES := $(TOCS) CHANGELOG.md LICENSE
 INSTALL_DIRS  := Core UI Locales Media
 LUA_DIRS      := Core UI Locales
 
@@ -66,7 +68,7 @@ NO_ADDONS_MSG = echo "AddOns folder not found. Set WOW_RETAIL_ADDON_FOLDER=/path
 
 .DEFAULT_GOAL := help
 
-.PHONY: help version check check-toc check-locales ruff lint test install debug uninstall purge \
+.PHONY: help version store-images check check-toc check-locales ruff lint test install debug uninstall install-forever uninstall-forever purge \
 	dist deploy release public github clean distclean
 
 ##@ General
@@ -79,6 +81,10 @@ help:
 ## version: print the addon version
 version:
 	@echo "$(VERSION)"
+
+## store-images: banner and avatar for CurseForge and Wago into brand/images/ (Makefile only)
+store-images:
+	python3 brand/source/store_images.py
 
 ##@ Checks
 
@@ -98,8 +104,14 @@ check:
 		echo "no Lua available (install lua/luac and luacheck)"; exit 1; \
 	fi
 
-## check-toc: every file the TOC lists exists, every Lua/XML file is listed
+## check-toc: TOCs agree beyond ## Interface:, listed files exist, every Lua/XML file is listed
 check-toc:
+	@ref="$$(grep -v '^## Interface:' $(TOC))"; \
+	for toc in $(filter-out $(TOC),$(TOCS)); do \
+		[ "$$(grep -v '^## Interface:' "$$toc")" = "$$ref" ] || { \
+			echo "  DRIFT   $$toc differs from $(TOC) beyond ## Interface:"; exit 1; }; \
+	done; \
+	echo "toc: $(words $(TOCS)) flavors agree"
 	@missing=0; \
 	for f in $$(sed -n 's/\r$$//; s|\\|/|g; /^[A-Za-z].*\.\(lua\|xml\)$$/p' $(TOC)); do \
 		[ -f "$$f" ] || { echo "  MISSING $$f (listed in the TOC)"; missing=1; }; \
@@ -117,10 +129,11 @@ check-toc:
 check-locales:
 	@python3 tools/check-locales.py
 
-## ruff: Python checks on tools/, any finding fails
+## ruff: Python checks on tools/ and brand/source/, any finding fails
 ruff:
 	@command -v ruff >/dev/null 2>&1 || { echo "ruff not found (pipx install ruff)"; exit 1; }
-	@ruff check --no-cache -q tools/*.py && echo "ruff: no findings"
+	@ruff check --no-cache -q tools/*.py brand/source && echo "ruff: no findings"
+	@ruff format --check -q brand/source
 
 ## lint: luacheck, TOC, locales, ruff, Makefile comments (BLOCKER)
 lint: check check-toc check-locales ruff
@@ -189,6 +202,14 @@ uninstall:
 	rm -rf "$$target"; \
 	echo "removed $$target"; \
 	echo "SavedVariables kept - 'make purge CONFIRM=yes' deletes them"
+
+## install-forever: install into the Forever client (FLAVOR=_forever_)
+install-forever:
+	@$(MAKE) --no-print-directory install FLAVOR=_forever_
+
+## uninstall-forever: remove the addon from the Forever client, SavedVariables stay
+uninstall-forever:
+	@$(MAKE) --no-print-directory uninstall FLAVOR=_forever_
 
 ## purge: uninstall and delete the SavedVariables (needs CONFIRM=yes)
 purge:

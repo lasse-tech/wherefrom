@@ -43,6 +43,10 @@ vendor, world drop and so on. It is shown when the drop index has nothing more p
 
 No external database, no web lookups, no libraries: everything comes out of the client.
 
+**World of Warcraft: Forever** loads `Wherefrom_Camelot.toc` (interface 16001) and has the
+first and the third source. Its client has no Adventure Guide (`Blizzard_EncounterJournal`
+does not load there), so *Drops from* stays empty.
+
 ## Commands
 
 | Command | What it does |
@@ -56,7 +60,8 @@ No external database, no web lookups, no libraries: everything comes out of the 
 ## Installation
 
 Download the latest release from <https://github.com/lasse-tech/wherefrom/releases> and
-drop the `Wherefrom` folder into `World of Warcraft/_retail_/Interface/AddOns`.
+drop the `Wherefrom` folder into `World of Warcraft/_retail_/Interface/AddOns` or
+`World of Warcraft/_forever_/Interface/AddOns`.
 
 From a clone:
 
@@ -68,7 +73,7 @@ make help        # every target
 ```
 
 `make install` finds the client on its own; `WOW_RETAIL_ADDON_FOLDER=/path/to/Interface/AddOns`
-overrides it.
+overrides it, `make install-forever` installs into Forever.
 
 ## Language
 
